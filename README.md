@@ -1,4 +1,4 @@
-# MuhaiminTech Spring Boot Boilerplate
+# Spring Boot Boilerplate
 
 A full-featured **Spring Boot 3.5.6** boilerplate with **Java 25**, **MySQL 8**, and a clean **RBAC + Access Profile separation** for enterprise-ready web applications.
 
