@@ -1,5 +1,6 @@
 package com.muhaimintech.boilerplate.userManagement.service;
 
+import com.muhaimintech.boilerplate.userManagement.dto.ChangePasswordDto;
 import com.muhaimintech.boilerplate.userManagement.dto.UserRequestAPDto;
 import com.muhaimintech.boilerplate.userManagement.dto.UserRequestRBACDto;
 import com.muhaimintech.boilerplate.userManagement.model.AccessProfile;
@@ -10,6 +11,7 @@ import com.muhaimintech.boilerplate.userManagement.repository.RoleRepository;
 import com.muhaimintech.boilerplate.userManagement.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -168,6 +170,18 @@ public class UserService {
         existing.setUserType(request.getUserType());
 
         return userRepository.save(existing);
+    }
+
+    public void changePassword(String username, ChangePasswordDto request) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User Not Found."));
+
+        if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
+            throw new IllegalArgumentException("Current Password Is Incorrect.");
+        }
+
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        userRepository.save(user);
     }
 
     // ===== Validation Helpers =====

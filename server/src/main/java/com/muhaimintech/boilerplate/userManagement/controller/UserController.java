@@ -1,5 +1,6 @@
 package com.muhaimintech.boilerplate.userManagement.controller;
 
+import com.muhaimintech.boilerplate.userManagement.dto.ChangePasswordDto;
 import com.muhaimintech.boilerplate.userManagement.dto.UserRequestAPDto;
 import com.muhaimintech.boilerplate.userManagement.dto.UserRequestRBACDto;
 import com.muhaimintech.boilerplate.userManagement.model.User;
@@ -12,6 +13,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -120,11 +122,14 @@ public class UserController {
             return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
-//
-//    @PreAuthorize("hasPermission('ACCESS', 'Test')")
-    @GetMapping("/test")
-    public ResponseEntity<String> testEndpoint(Authentication auth) {
-        return ResponseEntity.ok(auth.getPrincipal().toString());
+
+    // ========== Other Controllers ==========
+
+    @RequestMapping(method = RequestMethod.PUT, value = "/v1/users/password")
+    public ResponseEntity<String> changePassword(@RequestBody ChangePasswordDto request,
+                                                 Principal principal) {
+        userService.changePassword(principal.getName(), request);
+        return ResponseEntity.ok("Password Changed Successfully.");
     }
 
 }
